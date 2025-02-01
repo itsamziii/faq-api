@@ -5,6 +5,7 @@ import { logger } from "./lib/logger.js";
 import { connectMongo } from "./utils/connectMongo.js";
 import redis from "./lib/redis.js";
 import { errorMiddleware } from "./middlewares/error.js";
+import faqRouter from "./routes/faqs.js";
 
 // Connect to MongoDB and flush Redis
 
@@ -17,6 +18,8 @@ const app: Express = express();
 
 app.use(cors());
 app.use(express.json());
+
+app.use("/api/faqs", faqRouter);
 
 app.get("/", (_, res) => {
     res.send("Hello, World!");
