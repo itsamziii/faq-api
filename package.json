@@ -4,6 +4,7 @@
     "description": "Assignment for BharatFD",
     "main": "dist/index.js",
     "scripts": {
+        "dev": "nodemon --watch src -e ts --exec node --loader ts-node/esm src/index.ts",
         "start": "node --enable-source-maps dist/index.js",
         "build": "npm run clean && tsc --noEmit && swc ./src --out-dir ./dist --strip-leading-paths",
         "clean": "del-cli dist",
@@ -26,6 +27,7 @@
         "del-cli": "^6.0.0",
         "eslint": "^9.19.0",
         "eslint-config-prettier": "^10.0.1",
+        "nodemon": "^3.1.9",
         "pino-pretty": "^13.0.0",
         "prettier": "^3.4.2",
         "supertest": "^7.0.0",
