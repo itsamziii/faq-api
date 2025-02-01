@@ -1,5 +1,5 @@
 import type { Response, Request } from "express";
-import { FAQModel, type FAQInput } from "../../models/FAQModel.js";
+import { FAQModel, type FAQInput, type IFAQ } from "../../models/FAQModel.js";
 import {
     faqInputBodySchema,
     type FAQResponse,
@@ -10,7 +10,7 @@ import { logger } from "../../lib/logger.js";
 
 export async function createFAQ(
     req: Request<unknown, unknown, FAQInput>,
-    res: Response<FAQResponse>,
+    res: Response<FAQResponse<IFAQ>>,
 ): Promise<void> {
     try {
         const parsedBodyResult = faqInputBodySchema.safeParse(req.body);

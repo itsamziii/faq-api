@@ -1,9 +1,9 @@
 import { z } from "zod";
 import mongoose from "mongoose";
-import type { FAQTranslated, IFAQ } from "../models/FAQModel.js";
+import type { FAQTranslated } from "../models/FAQModel.js";
 
-export interface FAQResponse {
-    data: FAQTranslated[] | IFAQ | null;
+export interface FAQResponse<T> {
+    data: T | null;
     error?: string;
 }
 
@@ -21,14 +21,13 @@ export const querySchema = z.object({
 export function buildResponse(
     faqs: FAQTranslated[],
     lang: string,
-): FAQResponse {
+): FAQResponse<FAQTranslated[]> {
     const hasTranslations = faqs.some((faq) => faq.language === lang);
     return {
         data: faqs,
-        ...(!hasTranslations &&
-            lang !== "en" && {
-                error: `No translations found for ${lang}, using English fallback`,
-            }),
+        ...(!hasTranslations && {
+            error: `No translations found for ${lang}, using English fallback`,
+        }),
     };
 }
 

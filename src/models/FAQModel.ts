@@ -6,7 +6,6 @@ import mongoose, {
     Schema,
     type UpdateResult,
 } from "mongoose";
-import { string } from "zod";
 
 export interface IFAQ {
     _id: mongoose.Types.ObjectId;
@@ -40,14 +39,13 @@ interface FAQModel extends Model<IFAQ, {}, IFAQMethods> {
 
 const faqSchema = new Schema<IFAQ, FAQModel, IFAQMethods>(
     {
-        _id: string,
-        question: string,
-        answer: string,
+        question: String,
+        answer: String,
         translations: {
             type: Map,
             of: {
-                question: string,
-                answer: string,
+                question: String,
+                answer: String,
             },
         },
     },
@@ -77,7 +75,7 @@ faqSchema.method("getTranslated", function (lang: string): FAQTranslated {
     const translation = this.translations.get(lang);
 
     return {
-        id: this._id.toString(),
+        id: this._id.toHexString(),
         question: translation?.question ?? this.question,
         answer: translation?.answer ?? this.answer,
         language: translation ? lang : "en",

@@ -6,7 +6,7 @@ import { validateObjectId, type FAQResponse } from "../../utils/validation.js";
 
 export async function deleteFAQ(
     req: Request,
-    res: Response<FAQResponse>,
+    res: Response<FAQResponse<null>>,
 ): Promise<void> {
     try {
         const { faqId } = req.params;

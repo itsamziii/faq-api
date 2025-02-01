@@ -13,5 +13,4 @@ export const ERROR_MESSAGES = {
     TOKEN_EXPIRED: "Token expired",
 };
 
-// Can be extended to support more languages
 export const SUPPORTED_LANGUAGES = ["hi", "bn"];

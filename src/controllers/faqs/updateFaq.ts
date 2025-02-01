@@ -11,7 +11,7 @@ import { logger } from "../../lib/logger.js";
 
 export async function updateFAQ(
     req: Request,
-    res: Response<FAQResponse>,
+    res: Response<FAQResponse<null>>,
 ): Promise<void> {
     try {
         const { faqId } = req.params;
@@ -45,7 +45,7 @@ export async function updateFAQ(
         data.translations = translations;
 
         const faqUpdated = await FAQModel.update(faqId, data);
-        if (faqUpdated.matchedCount === 0) {
+        if (!faqUpdated.acknowledged || faqUpdated.matchedCount === 0) {
             res.status(404).json({
                 data: null,
                 error: "No FAQs found",

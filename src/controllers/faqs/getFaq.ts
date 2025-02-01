@@ -1,11 +1,11 @@
 import type { Response, Request } from "express";
 import { validateObjectId, type FAQResponse } from "../../utils/validation.js";
-import { FAQModel } from "../../models/FAQModel.js";
+import { FAQModel, type IFAQ } from "../../models/FAQModel.js";
 import { logger } from "../../lib/logger.js";
 
 export async function getFAQ(
     req: Request,
-    res: Response<FAQResponse>,
+    res: Response<FAQResponse<IFAQ>>,
 ): Promise<void> {
     try {
         const { faqId } = req.params;

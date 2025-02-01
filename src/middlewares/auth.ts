@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import { verify, JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import type { JwtPayload } from "jsonwebtoken";
 import env from "../env.js";
 import { ERROR_MESSAGES, UserRole } from "../constants.js";
@@ -28,7 +28,7 @@ export function auth(allowedRoles: UserRole[]) {
                 return;
             }
 
-            const decoded = verify(token, env.JWT_SECRET);
+            const decoded = jwt.verify(token, env.JWT_SECRET);
             if (typeof decoded === "string") {
                 res.status(401).json({ error: ERROR_MESSAGES.UNAUTHORIZED });
                 return;
@@ -50,10 +50,10 @@ export function auth(allowedRoles: UserRole[]) {
             req.user = decoded;
             next();
         } catch (error) {
-            if (error instanceof JsonWebTokenError) {
+            if (error instanceof jwt.JsonWebTokenError) {
                 res.status(401).json({ error: ERROR_MESSAGES.INVALID_TOKEN });
                 return;
-            } else if (error instanceof TokenExpiredError) {
+            } else if (error instanceof jwt.TokenExpiredError) {
                 res.status(401).json({ error: ERROR_MESSAGES.TOKEN_EXPIRED });
                 return;
             }

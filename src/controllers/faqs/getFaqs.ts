@@ -11,7 +11,7 @@ import { setCache } from "../../utils/manageCache.js";
 
 export async function getFAQs(
     req: Request,
-    res: Response<FAQResponse>,
+    res: Response<FAQResponse<FAQTranslated[]>>,
 ): Promise<void> {
     try {
         const parsedLangResult = querySchema.safeParse(req.query);
@@ -46,7 +46,9 @@ export async function getFAQs(
 
         await setCache(cacheKey, transformedFaqs);
 
-        res.status(200).json(buildResponse(transformedFaqs, lang));
+        res.status(200).json(
+            buildResponse(transformedFaqs, req.query.lang as string),
+        );
         return;
     } catch (error) {
         logger.error(error);
