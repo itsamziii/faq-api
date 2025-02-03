@@ -1,25 +1,22 @@
-version: '3.8'
-
 services:
   app:
-    build: .
     container_name: faq_api
-    restart: always
+    build: .
     ports:
       - "3000:3000"
     depends_on:
       - mongo
       - redis
     environment:
+      - COREPACK_DEFAULT_TO_LATEST=0
       - NODE_ENV=production
       - MONGO_URI=mongodb://mongo:27017/faqs
       - REDIS_URI=redis://redis:6379
       - JWT_SECRET=${JWT_SECRET}
     env_file:
-      - .env
-    volumes:
-      - .:/app
-      - /app/node_modules
+      - ./.env
+    networks:
+      - faq_api
 
   mongo:
     image: mongo:latest
@@ -30,10 +27,10 @@ services:
     volumes:
       - mongo_data:/data/db
     networks:
-      - app-network
+      - faq_api
 
   redis:
-    image: redis:latest-alpine
+    image: redis:latest
     container_name: redis_cache
     restart: always
     ports:
@@ -41,10 +38,13 @@ services:
     volumes:
       - redis_data:/data
     networks:
-      - app-network
+      - faq_api
 
 volumes:
   mongo_data:
     name: faq_mongo_data
   redis_data:
     name: faq_redis_data
+
+networks:
+  faq_api:

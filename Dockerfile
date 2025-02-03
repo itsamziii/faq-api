@@ -1,34 +1,26 @@
-# Build stage
-FROM node:22-alpine AS builder
-
+FROM node:alpine AS base
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
+COPY . /app
 WORKDIR /app
 
-RUN corepack enable && corepack prepare pnpm@latest --activate
-
+FROM base AS prod-deps
 COPY package.json pnpm-lock.yaml ./
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
 
-RUN pnpm install --frozen-lockfile
-
-COPY . .
-
+FROM base AS build
+COPY package.json pnpm-lock.yaml ./
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 RUN pnpm build
 
-# Production stage
-FROM node:22-alpine
-
-ARG JWT_SECRET
-ENV JWT_SECRET=$JWT_SECRET
+FROM node:alpine AS runner
 
 WORKDIR /app
 
-RUN corepack enable && corepack prepare pnpm@latest --activate
-
-COPY package.json pnpm-lock.yaml ./
-
-RUN pnpm install --prod --frozen-lockfile
-
-COPY --from=builder /app/dist ./dist
+COPY --from=prod-deps /app/node_modules /app/node_modules
+COPY --from=build /app/dist /app/dist
+COPY --from=build /app/package.json /app/package.json
 
 EXPOSE 3000
-
-CMD ["pnpm", "start"]
+CMD ["node", "--run", "start"]

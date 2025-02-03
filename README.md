@@ -45,7 +45,7 @@ pnpm dev
 1. Build and start containers
 
 ```bash
-docker-compose --env-file .env up -d
+docker-compose -d
 ```
 
 2. Stop containers:
